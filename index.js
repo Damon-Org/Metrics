@@ -1,5 +1,5 @@
 import BaseModule from './structures/BaseModule.js'
-import { UpdateInterval } from './util/Constants.js'
+import Constants, { UpdateInterval } from './util/Constants.js'
 import Util from './util/Utils.js'
 
 export default class Metrics extends BaseModule {
@@ -27,14 +27,23 @@ export default class Metrics extends BaseModule {
         });
     }
 
+    get constants() {
+        return Constants;
+    }
+
+    get util() {
+        return Util;
+    }
+
     /**
+     * @private
      * @param {Class} instance The class instance of the command
      * @param {Message} msgObj The discord message object
      * @param {string[]} args The arguments passed when the command ran
      * @param {boolean} mentioned If the command was triggered through a mention
      */
     _onCommandExecuted(instance, msgObj, args, mentioned) {
-        
+
     }
 
     /**
@@ -46,6 +55,9 @@ export default class Metrics extends BaseModule {
         this._updateLoop();
     }
 
+    /**
+     * @private
+     */
     async _updateLoop() {
         this.globalStorage.set('serverCount', await Util.getServerCount(this._m));
 
