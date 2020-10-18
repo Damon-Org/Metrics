@@ -2,6 +2,8 @@ import BaseModule from './structures/BaseModule.js'
 import Constants, { UpdateInterval } from './util/Constants.js'
 import Util from './util/Utils.js'
 
+import { createIfNotExists, increasePlayCount } from './structures/models/MetricsModel.js'
+
 export default class Metrics extends BaseModule {
     /**
      * @param {Main} main
@@ -17,14 +19,11 @@ export default class Metrics extends BaseModule {
                 {
                     name: 'ready',
                     call: '_onReady'
-                },
-                {
-                    mod: 'commandHandler',
-                    name: 'command',
-                    call: '_onCommandExecuted'
                 }
             ]
         });
+
+        this._ready = false;
     }
 
     get constants() {
@@ -37,20 +36,23 @@ export default class Metrics extends BaseModule {
 
     /**
      * @private
-     * @param {Class} instance The class instance of the command
-     * @param {Message} msgObj The discord message object
-     * @param {string[]} args The arguments passed when the command ran
-     * @param {boolean} mentioned If the command was triggered through a mention
-     */
-    _onCommandExecuted(instance, msgObj, args, mentioned) {
-
-    }
-
-    /**
-     * @private
      */
     _onReady() {
         this.log.info('METRICS', 'Starting Metrics loop.');
+
+        if(this._ready) {
+            this._m.on('trackPlayed', _ => {
+                increasePlayCount('track');
+            });
+
+            this._m.on('playlistPlayed', _ => {
+                increasePlayCount('playlist');
+            });
+
+            this._m.on('albumPlayed', _ => {
+                increasePlayCount('album');
+            });
+        }
 
         this._updateLoop();
     }
@@ -67,6 +69,16 @@ export default class Metrics extends BaseModule {
     }
 
     setup() {
+        this.modules.mongodb.on('ready', async _ => {
+            if(await createIfNotExists().length < 1) {
+                this.log.error('METRICS', 'Could not create initial collection.');
+
+                return false;
+            }
+
+            this._ready = true;
+        });
+
         return true;
     }
 }
