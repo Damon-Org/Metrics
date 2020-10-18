@@ -19,6 +19,11 @@ export default class Metrics extends BaseModule {
                 {
                     name: 'ready',
                     call: '_onReady'
+                },
+                {
+                    mod: 'mongodb',
+                    name: 'ready',
+                    call: '_mongoReady'
                 }
             ]
         });
@@ -68,17 +73,22 @@ export default class Metrics extends BaseModule {
         this._updateLoop();
     }
 
+    /**
+     * @private
+     */
+    async _mongoReady() {
+        if(await createIfNotExists().length < 1) {
+            this.log.error('METRICS', 'Could not create initial collection.');
+
+            return false;
+        }
+
+        this._ready = true;
+
+        return true;
+    }
+
     setup() {
-        this.modules.mongodb.on('ready', async _ => {
-            if(await createIfNotExists().length < 1) {
-                this.log.error('METRICS', 'Could not create initial collection.');
-
-                return false;
-            }
-
-            this._ready = true;
-        });
-
         return true;
     }
 }
