@@ -1,6 +1,6 @@
 import Model from '../schemas/MetricsSchema.js'
 
-export const createIfNotExists = (type) => {
+export const createIfNotExists = () => {
     return new Promise((resolve, reject) => {
         Model.findOne({ id: 1 })
             .then((doc) => {
