@@ -3,8 +3,12 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose;
 
 const metrics = new Schema({
-    id: Number,
-    played: Object
-}, { collection: 'Metrics' });
+    id: { type: Number, required: true },
+    played: {
+        tracks: Number,
+        playlists: Number,
+        albums: Number
+    }
+});
 
-export default mongoose.model('Metrics', metrics);
+export default mongoose.model('metrics', metrics);
