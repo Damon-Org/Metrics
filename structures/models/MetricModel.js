@@ -1,4 +1,4 @@
-import Model from '../schemas/MetricsSchema.js'
+import Model from '../schemas/MetricSchema.js'
 
 export const createIfNotExists = () => {
     return new Promise((resolve, reject) => {
