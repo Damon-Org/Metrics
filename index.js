@@ -13,7 +13,6 @@ export default class Metrics extends BaseModule {
 
         this.register(Metrics, {
             name: 'metrics',
-            scope: 'global',
             requires: ['commandHandler'],
             events: [
                 {
@@ -85,10 +84,6 @@ export default class Metrics extends BaseModule {
 
         this._ready = true;
 
-        return true;
-    }
-
-    setup() {
         return true;
     }
 }
