@@ -26,8 +26,6 @@ export default class Metrics extends BaseModule {
                 }
             ]
         });
-
-        this._ready = false;
     }
 
     get constants() {
@@ -44,19 +42,17 @@ export default class Metrics extends BaseModule {
     _onReady() {
         this.log.info('METRICS', 'Starting Metrics loop.');
 
-        if(this._ready) {
-            this._m.on('trackPlayed', _ => {
-                increasePlayCount('track');
-            });
+        this._m.on('trackPlayed', _ => {
+            increasePlayCount('track');
+        });
 
-            this._m.on('playlistPlayed', _ => {
-                increasePlayCount('playlist');
-            });
+        this._m.on('playlistPlayed', _ => {
+            increasePlayCount('playlist');
+        });
 
-            this._m.on('albumPlayed', _ => {
-                increasePlayCount('album');
-            });
-        }
+        this._m.on('albumPlayed', _ => {
+            increasePlayCount('album');
+        });
 
         this._updateLoop();
     }
@@ -76,13 +72,11 @@ export default class Metrics extends BaseModule {
      * @private
      */
     async _mongoReady() {
-        if(await createIfNotExists().length < 1) {
+        if (await createIfNotExists().length < 1) {
             this.log.error('METRICS', 'Could not create initial collection.');
 
             return false;
         }
-
-        this._ready = true;
 
         return true;
     }
