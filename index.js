@@ -2,7 +2,7 @@ import BaseModule from './structures/BaseModule.js'
 import Constants, { UpdateInterval } from './util/Constants.js'
 import Util from './util/Utils.js'
 
-import { createIfNotExists, increasePlayCount } from './structures/models/MetricModel.js'
+import Model, { createIfNotExists, increasePlayCount } from './structures/models/MetricModel.js'
 
 export default class Metrics extends BaseModule {
     /**
@@ -30,6 +30,10 @@ export default class Metrics extends BaseModule {
 
     get constants() {
         return Constants;
+    }
+
+    get model() {
+        return Model;
     }
 
     get util() {
