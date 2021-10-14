@@ -1,24 +1,15 @@
 import Model from '../schemas/MetricSchema.js'
 
 export const createIfNotExists = () => {
-    return new Promise((resolve, reject) => {
-        Model.findOne({ id: 1 })
-            .then((doc) => {
-                if (!doc) {
-                    const create = new Model({
-                        'id': 1,
-                        'played.tracks': 0,
-                        'played.playlists': 0,
-                        'played.albums': 0
-                    }).save();
+    const doc = await Model.findOne({ id: 1 }).exec();
+    if (doc) return doc;
 
-                    resolve(create);
-                }
-
-                resolve(doc);
-            })
-            .catch((err) => reject(err));
-    });
+    return new Model({
+        'id': 1,
+        'played.tracks': 0,
+        'played.playlists': 0,
+        'played.albums': 0
+    }).save();
 };
 
 export const increasePlayCount = (type) => {
@@ -30,9 +21,10 @@ export const increasePlayCount = (type) => {
         } 
     };
 
-    return new Promise((resolve, reject) => {
-        Model.findOneAndUpdate({ id: 1 }, update)
-            .then((doc) => resolve(doc))
-            .catch((err) => reject(err));
-    });
+    return Model.findOneAndUpdate({ id: 1 }, update).exec();
+};
+
+export default {
+    createIfNotExists,
+    increasePlayCount
 };
